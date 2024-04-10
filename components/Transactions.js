@@ -10,6 +10,7 @@ const Transaction = () => {
     const [transactionType, setTransactionType] = useState('');
     const [amount, setAmount] = useState('');
     const [transactions, setTransactions] = useState([]);
+    const [expenseCategory, setExpenseCategory] = useState('');
 
     const db = getFirestore(app);
     const navigation = useNavigation();
@@ -42,11 +43,16 @@ const Transaction = () => {
                 type: transactionType,
                 amount: parseFloat(amount),
                 timestamp: new Date().toISOString(),
+                category: transactionType === 'Debit' ? expenseCategory : null
             };
 
             try {
                 const docRef = await addDoc(transactionsRef, transactionData);
                 console.log('Transaction added with ID: ', docRef.id);
+                setTransactionType('');
+                setAmount('');
+                setExpenseCategory('');
+    
             } catch (error) {
                 console.error('Error adding transaction: ', error);
             }
@@ -68,6 +74,14 @@ const Transaction = () => {
                     <Picker.Item label="Credit" value="Credit" />
                     <Picker.Item label="Debit" value="Debit" />
                 </Picker>
+                {transactionType === 'Debit' && (
+                    <TextInput
+                        style={styles.amt}
+                        placeholder="Enter type of expense"
+                        value={expenseCategory}
+                        onChangeText={(text) => setExpenseCategory(text)}
+                    />
+                )}
                 <TextInput
                     style={styles.amt}
                     placeholder="Amount"
@@ -153,7 +167,6 @@ const styles = StyleSheet.create({
     amt: {
         marginBottom: 10,
         marginLeft: 90,
-        fontWeight: '700', // Bolden the text
         fontSize: 16, // Adjust font size if needed
     },
     listHeader: {
