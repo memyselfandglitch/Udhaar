@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, FlatList, Text, StyleSheet, View, TouchableOpacity, TextInput } from 'react-native';
+import { FlatList, Text, StyleSheet, View, TouchableOpacity, TextInput } from 'react-native';
 import { app } from '../firebase';
 import { Picker } from '@react-native-picker/picker';
 import { getAuth } from 'firebase/auth';
@@ -56,7 +56,7 @@ const Transaction = () => {
     };
 
     return (
-        <ScrollView>
+        <View style={styles.container}>
             <Text style={styles.heading}>Add Transactions</Text>
             <View style={styles.addTrans}>
                 <Picker
@@ -99,12 +99,17 @@ const Transaction = () => {
                     </View>
                 )}
                 keyExtractor={item => item.id}
+                ListHeaderComponent={<View style={styles.listHeader} />}
+                ListFooterComponent={<View style={styles.listFooter} />}
             />
-        </ScrollView>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
     addTrans: {
         flexDirection: 'column'
     },
@@ -150,6 +155,12 @@ const styles = StyleSheet.create({
         marginLeft: 90,
         fontWeight: '700', // Bolden the text
         fontSize: 16, // Adjust font size if needed
+    },
+    listHeader: {
+        height: 20, // Adjust as needed
+    },
+    listFooter: {
+        height: 20, // Adjust as needed
     }
 });
 
