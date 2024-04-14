@@ -3,7 +3,6 @@ import { FlatList, Text, StyleSheet, View, TouchableOpacity, TextInput } from 'r
 import { app } from '../firebase';
 import { Picker } from '@react-native-picker/picker';
 import { getAuth } from 'firebase/auth';
-import { useNavigation } from '@react-navigation/native';
 import { getDocs, query, getFirestore, collection, addDoc, orderBy } from 'firebase/firestore';
 
 const Transaction = () => {
@@ -13,7 +12,6 @@ const Transaction = () => {
     const [expenseCategory, setExpenseCategory] = useState('');
 
     const db = getFirestore(app);
-    const navigation = useNavigation();
     const auth = getAuth(app);
     const user = auth.currentUser;
 
@@ -93,7 +91,8 @@ const Transaction = () => {
                     <Text style={styles.buttonText}>Add Transaction</Text>
                 </TouchableOpacity>
             </View>
-            <Text style={styles.heading}>Transactions</Text>
+            
+            <Text style={[styles.heading]}>Transactions</Text>
             <FlatList
                 data={transactions}
                 renderItem={({ item }) => (
@@ -110,6 +109,10 @@ const Transaction = () => {
                             <Text style={styles.cellText}>Timestamp</Text>
                             <Text>{item.timestamp.split('T')[0]} {item.timestamp.split('T')[1].split('.')[0]}</Text>
                         </View>
+                        {item.type === 'Debit' && <View style={styles.tableCell}>
+                            <Text style={styles.cellText}>Category</Text>
+                            <Text>{item.category}</Text>
+                        </View>}
                     </View>
                 )}
                 keyExtractor={item => item.id}
@@ -146,9 +149,19 @@ const styles = StyleSheet.create({
         margin: 20
     },
     picker: {
-        margin: 20,
-        padding: 20
+        marginVertical: 20, // Adjust vertical margin if needed
+        marginLeft: 50, // Align with the left side of the button
+        marginRight: 'auto', // Push the picker to the left
+        width: '80%', // Take up 80% of the available width
     },
+    amt: {
+        marginBottom: 10,
+        marginLeft: 65, // Align with the left side of the button
+        marginRight: 'auto', // Push the input to the left
+        width: '80%', // Take up 80% of the available width
+        fontSize: 16,
+    },
+    
     button: {
         backgroundColor: '#0782F9',
         width: '60%',
@@ -164,11 +177,7 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         fontSize: 16
     },
-    amt: {
-        marginBottom: 10,
-        marginLeft: 90,
-        fontSize: 16, // Adjust font size if needed
-    },
+    
     listHeader: {
         height: 20, // Adjust as needed
     },

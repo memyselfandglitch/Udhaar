@@ -21,15 +21,23 @@ const HomeScreen=()=> {
     .catch(err=>alert(err.message))
   }
 
+  const handleAnalysis=()=>{
+    navigation.replace("Analysis");
+  }
+
   return(
     <View style={styles.container}>
-      <Text>Email : {auth.currentUser?.email}</Text>
+      <Text>Email: {auth.currentUser?.email}</Text>
       <TouchableOpacity onPress={handleSignOut} style={styles.button}>
         <Text style={styles.buttonText}>Sign Out</Text>
       </TouchableOpacity>
       <Transactions/>
+      <TouchableOpacity onPress={handleAnalysis} style={styles.button}>
+        <Text style={styles.buttonText}>Analyse my transactions</Text>
+      </TouchableOpacity>
     </View>
   )
+  
 }
 
 
