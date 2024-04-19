@@ -1,21 +1,39 @@
-import dotenv from 'dotenv'
-dotenv.config();
-const API_TOKEN=process.env.API_TOKEN;
+import env from './.env.js';
+import axios from "axios";
 
-import fetch from "node-fetch";
+const API_TOKEN=env.API_TOKEN;
 
-async function query(data) {
-    const response = await fetch(
-        "https://api-inference.huggingface.co/models/facebook/bart-large-mnli",
-        {
-            headers: { Authorization: `Bearer ${API_TOKEN}` },
-            method: "POST",
-            body: JSON.stringify(data),
-        }
-    );
-    const result = await response.json();
-    return result;
+export async function classifier(data) {
+    try {
+        const response = await axios.post(
+            "https://api-inference.huggingface.co/models/facebook/bart-large-mnli",
+            data,
+            {
+                headers: { Authorization: `Bearer ${API_TOKEN}` },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw new Error(`HTTP request failed: ${error.message}`);
+    }
 }
-query({inputs: "Netflix", parameters: {candidate_labels: ["food", "subscription", "travelling", "transportation","online shopping", "rent and utilities"]}}).then((response) => {
-    console.log(`${response["sequence"]} has a type of ${response["labels"][0]} with probability ${response["scores"][0]}`)
-});
+
+    
+
+
+// query({inputs: "dress", parameters: {candidate_labels: ["food", "subscription", "travelling", "transportation","online shopping", "rent and utilities","personal care","luxuries","miscellaneous"]}}).then((response) => {
+//     console.log(`${response["sequence"]} has a type of ${response["labels"][0]} with probability ${response["scores"][0]}`)
+// });
+
+// export async function classifier(data) {
+//     const response = await fetch(
+//         "https://api-inference.huggingface.co/models/facebook/bart-large-mnli",
+//         {
+//             headers: { Authorization: `Bearer ${API_TOKEN}` },
+//             method: "POST",
+//             body: JSON.stringify(data),
+//         }
+//     );
+//     const result = await response.json();
+//     return result;
+// }

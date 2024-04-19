@@ -6,7 +6,7 @@ import { getAuth,createUserWithEmailAndPassword, signInWithEmailAndPassword } fr
 import { useNavigation } from '@react-navigation/native';
 import { getDocs,query ,getFirestore, collection, addDoc, orderBy } from 'firebase/firestore';
 import Transactions from '../components/Transactions';
-import Transaction from '../components/Transactions';
+import { classifier } from '../classifier';
 
 const AnalysisScreen=()=> {
 
@@ -28,11 +28,29 @@ const AnalysisScreen=()=> {
                     ...doc.data()
                 }));
                 // console.log(transactionsData);
-                transactionsData.forEach((element) => {
-                    if(element["category"]!==null)types.push(element["category"])
-                  });
-                console.log(types)
-            
+                let arr={"online shopping":0, "rent and utilities":0, "luxuries":0,"subscriptions":0,"food and drinks":0,"miscellaneous":0}
+                const promises = transactionsData.map(async (element) => {
+                  if (element["category"] !== null) {
+                    const response = await classifier({
+                      inputs: element["category"],
+                      parameters: {
+                        candidate_labels: ["online shopping", "rent and utilities", "luxuries", "subscriptions", "food and drinks", "miscellaneous"]
+                      }
+                    });
+                    console.log(`${response["labels"][0]} for ${response["sequence"]}`);
+                    arr[response["labels"][0]]++; // Increment the corresponding category count in arr
+                  }
+                });
+                
+                
+                  Promise.all(promises)
+  .then(() => {
+    console.log(arr); // Output the updated arr object
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+
             } catch (error) {
                 console.error('Error fetching transactions: ', error);
             }
