@@ -18,7 +18,7 @@ const LoginScreen=()=> {
             }
         })
         return unsubscribe;
-    },[])
+    },[]);
 
     const handleSignUp=()=>{
         
@@ -27,6 +27,7 @@ const LoginScreen=()=> {
             const user=userCredentials.user;
             console.log('user created')
             console.log(user.email);
+            navigation.navigate("Home");
         })
         .catch(err=>alert(err.message))
     }
@@ -36,7 +37,8 @@ const LoginScreen=()=> {
         .then((userCredential) => {
             const user = userCredential.user;
             console.log('signed in')
-            console.log(user.email)
+            console.log(user.email);
+            navigation.navigate("Home");
           })
           .catch((error) => {
             const errorCode = error.code;

@@ -1,67 +1,83 @@
-import React, {useState, Component, useEffect } from 'react'
-import { FlatList, Text, StyleSheet, View, TouchableOpacity, TextInput } from 'react-native'
-import { app,analytics } from '../firebase';
-import { Picker } from '@react-native-picker/picker';
-import { getAuth,createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigation } from '@react-navigation/native';
-import { getDocs,query ,getFirestore, collection, addDoc, orderBy } from 'firebase/firestore';
-import Transactions from '../components/Transactions';
+import React, { useState, Component, useEffect } from "react";
+import {
+  FlatList,
+  Text,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
+import { app, analytics } from "../firebase";
+import { Picker } from "@react-native-picker/picker";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { useNavigation } from "@react-navigation/native";
+import {
+  getDocs,
+  query,
+  getFirestore,
+  collection,
+  addDoc,
+  orderBy,
+} from "firebase/firestore";
+import Transactions from "../components/Transactions";
 
-const HomeScreen=()=> {
+const HomeScreen = () => {
+  const db = getFirestore(app);
+  const navigation = useNavigation();
+  const auth = getAuth(app);
+  const user = auth.currentUser;
 
-    const db = getFirestore(app);
-    const navigation=useNavigation()
-    const auth=getAuth(app);
-    const user=auth.currentUser;
+  const handleSignOut = () => {
+    auth
+      .signOut()
+      .then(() => {
+        navigation.replace("Login");
+      })
+      .catch((err) => alert(err.message));
+  };
 
-  const handleSignOut=()=>{
-    auth.signOut().then(()=>{
-      navigation.replace("Login");
-    })
-    .catch(err=>alert(err.message))
-  }
+  const handleAnalysis = () => {
+    // navigation.replace("Analysis");
+    navigation.navigate("Analysis");
+  };
 
-  const handleAnalysis=()=>{
-    navigation.replace("Analysis");
-  }
-
-  return(
+  return (
     <View style={styles.container}>
       <Text>Email: {auth.currentUser?.email}</Text>
       <TouchableOpacity onPress={handleSignOut} style={styles.button}>
         <Text style={styles.buttonText}>Sign Out</Text>
       </TouchableOpacity>
-      <Transactions/>
+      <Transactions />
       <TouchableOpacity onPress={handleAnalysis} style={styles.button}>
         <Text style={styles.buttonText}>Analyse my transactions</Text>
       </TouchableOpacity>
     </View>
-  )
-  
-}
-
+  );
+};
 
 const styles = StyleSheet.create({
-  container:{
-    flex:1.5,
-    justifyContent:'column',
-    alignItems:'center'
+  container: {
+    flex: 1.5,
+    justifyContent: "column",
+    alignItems: "center",
   },
-  button:{
-    backgroundColor:'#0782F9',
-    width:'60%',
-    padding:15,
-    borderRadius:10,
-    alignItems:'center',
-    marginTop:20
+  button: {
+    backgroundColor: "#0782F9",
+    width: "60%",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 20,
   },
-  buttonText:{
-    color:'white',
-    fontWeight:'700',
-    fontSize:16
+  buttonText: {
+    color: "white",
+    fontWeight: "700",
+    fontSize: 16,
   },
-  
-
-})
+});
 
 export default HomeScreen;
